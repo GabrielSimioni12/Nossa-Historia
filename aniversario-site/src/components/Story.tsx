@@ -1,0 +1,140 @@
+import { useEffect, useRef, useState } from 'react'
+import { storySlides } from '../data/story'
+import '../styles/Story.css'
+
+
+interface StoryProps {
+  open: boolean
+  onClose: () => void
+}
+
+export default function Story({ open, onClose }: StoryProps) {
+  const [index, setIndex] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  const slide = storySlides[index]
+  const isLast = index === storySlides.length - 1
+
+  // reabre sempre do primeiro slide
+  useEffect(() => {
+    if (open) {
+      setIndex(0)
+      setProgress(0)
+      setPaused(false)
+    }
+  }, [open])
+
+  // trava a rolagem da página de trás enquanto o story está aberto,
+  // pra parecer uma tela totalmente separada
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
+  // troca a música e reinicia o progresso a cada slide novo
+  useEffect(() => {
+    if (!open) return
+    setProgress(0)
+    const audio = audioRef.current
+    if (audio) {
+      audio.currentTime = 0
+      audio.play().catch(() => {
+        // autoplay pode ser bloqueado antes da 1ª interação — o clique
+        // que abre o story já conta como interação, então normalmente toca
+      })
+    }
+  }, [index, open])
+
+  // avanço automático
+  useEffect(() => {
+    if (!open || paused) return
+    const stepMs = 50
+    const id = setInterval(() => {
+      setProgress((p) => {
+        const next = p + (stepMs / (slide.duration * 1000)) * 100
+        if (next >= 100) {
+          goNext()
+          return 100
+        }
+        return next
+      })
+    }, stepMs)
+    return () => clearInterval(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, paused, index, slide.duration])
+
+  // pausa o áudio quando o story fecha
+  useEffect(() => {
+    if (!open && audioRef.current) {
+      audioRef.current.pause()
+    }
+  }, [open])
+
+  if (!open) return null
+
+  function goNext() {
+    if (isLast) {
+      onClose()
+      return
+    }
+    setIndex((i) => Math.min(storySlides.length - 1, i + 1))
+  }
+
+  function goPrev() {
+    setIndex((i) => Math.max(0, i - 1))
+  }
+
+  return (
+    <div className="story-overlay" role="dialog" aria-modal="true">
+      <div className="story-overlay__bars">
+        {storySlides.map((s, i) => (
+          <div className="story-overlay__bar" key={s.id}>
+            <div
+              className="story-overlay__bar-fill"
+              style={{
+                width: i < index ? '100%' : i === index ? `${progress}%` : '0%',
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="story-overlay__header">
+        <button className="story-overlay__back" onClick={onClose}>
+          <span aria-hidden="true">←</span> Voltar ao início
+        </button>
+        <div className="story-overlay__actions">
+          <button
+            className="story-overlay__icon-btn"
+            onClick={() => setPaused((p) => !p)}
+            aria-label={paused ? 'Continuar' : 'Pausar'}
+          >
+            {paused ? '▶' : '❚❚'}
+          </button>
+        </div>
+      </div>
+
+      <img className="story-overlay__photo" src={slide.photo} alt={slide.caption} />
+
+      <div className="story-overlay__bottom">
+        <span className="story-overlay__music">
+          ♪ {slide.music.title} · {slide.music.artist}
+        </span>
+        <p className="story-overlay__caption">{slide.caption}</p>
+      </div>
+
+      <button className="story-overlay__zone story-overlay__zone--prev" onClick={goPrev} aria-label="Momento anterior" />
+      <button className="story-overlay__zone story-overlay__zone--next" onClick={goNext} aria-label="Próximo momento" />
+
+      <audio ref={audioRef} src={slide.music.src} />
+    </div>
+  )
+}

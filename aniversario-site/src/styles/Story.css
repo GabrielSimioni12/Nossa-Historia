@@ -1,0 +1,146 @@
+.story-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  overflow: hidden;
+}
+
+.story-overlay__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  animation: storyFadeIn 0.35s ease;
+}
+
+@keyframes storyFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.story-overlay__bars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  gap: 5px;
+  padding: 14px 12px 0;
+}
+
+.story-overlay__bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(245, 239, 230, 0.25);
+  overflow: hidden;
+}
+
+.story-overlay__bar-fill {
+  height: 100%;
+  background: var(--gold, #e8c468);
+  border-radius: 999px;
+}
+
+.story-overlay__header {
+  position: absolute;
+  top: 28px;
+  left: 12px;
+  right: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.story-overlay__back {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  color: #f5efe6;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.82rem;
+}
+
+.story-overlay__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.story-overlay__icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #f5efe6;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-overlay__bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 2.2rem 1.4rem 2.4rem;
+  text-align: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.story-overlay__music {
+  display: block;
+  color: var(--gold, #e8c468);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.story-overlay__caption {
+  margin: 0;
+  color: #f5efe6;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+}
+
+.story-overlay__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 35%;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.story-overlay__zone--prev {
+  left: 0;
+}
+
+.story-overlay__zone--next {
+  right: 0;
+  width: 65%;
+}y
