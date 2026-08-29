@@ -1,6 +1,10 @@
 import { timeline, TimelineEvent } from '../data/timeline'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
+function isVideo(path: string) {
+  return path.toLowerCase().endsWith('.mp4')
+}
+
 function TimelineItem({ event, index }: { event: TimelineEvent; index: number }) {
   const ref = useScrollReveal<HTMLLIElement>(0.25)
   const side = index % 2 === 0 ? 'left' : 'right'
@@ -13,12 +17,24 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
       </div>
 
       <div className="timeline__card">
-        <img
-          className="timeline__photo"
-          src={event.photo}
-          alt={event.title}
-          loading="lazy"
-        />
+        {isVideo(event.photo) ? (
+          <video
+            className="timeline__photo"
+            src={event.photo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <img
+            className="timeline__photo"
+            src={event.photo}
+            alt={event.title}
+            loading="lazy"
+          />
+        )}
         <div className="timeline__text">
           <span className="timeline__date">{event.date}</span>
           <h3 className="timeline__title">{event.title}</h3>
