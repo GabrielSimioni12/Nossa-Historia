@@ -7,6 +7,10 @@ interface StoryProps {
   onClose: () => void
 }
 
+function isVideo(path: string) {
+  return path.toLowerCase().endsWith('.mp4')
+}
+
 export default function Story({ open, onClose }: StoryProps) {
   const [index, setIndex] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -89,7 +93,6 @@ export default function Story({ open, onClose }: StoryProps) {
     setIndex((i) => Math.max(0, i - 1))
   }
 
-  // controla o áudio de verdade, e loga qualquer erro real no console
   function togglePaused() {
     setPaused((p) => {
       const next = !p
@@ -137,7 +140,24 @@ export default function Story({ open, onClose }: StoryProps) {
         </div>
       </div>
 
-      <img className="story-overlay__photo" src={slide.photo} alt={slide.caption} />
+      {isVideo(slide.photo) ? (
+        <video
+          key={slide.photo}
+          className="story-overlay__photo"
+          src={slide.photo}
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+      ) : (
+        <img
+          key={slide.photo}
+          className="story-overlay__photo"
+          src={slide.photo}
+          alt={slide.caption}
+        />
+      )}
 
       <div className="story-overlay__bottom">
         <span className="story-overlay__music">
