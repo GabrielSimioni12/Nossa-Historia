@@ -18,39 +18,39 @@ export const timeline: TimelineEvent[] = [
     date: 'capítulo um',
     title: 'Como tudo começou',
     description:
-      'Substitua por como vocês se conheceram — o lugar, o dia, aquela sensação de que algo estava começando.',
+      'Primeira vez que saimos juntos, eu ja te amava tanto nessa época',
     photo: '/linha_do_tempo/1.mp4',
   },
   {
     id: 2,
     date: 'capítulo dois',
-    title: 'O primeiro encontro',
+    title: 'A primeira Foto postada',
     description:
-      'Conte sobre o primeiro date: onde foram, o que conversaram, o que te fez sorrir sozinho depois.',
+      'O dia que assumimos nosso lindo amor',
     photo: '/linha_do_tempo/2.png',
   },
   {
     id: 3,
     date: 'capítulo três',
-    title: 'Uma viagem inesquecível',
+    title: 'Nossa primeira viagem junto',
     description:
-      'Fale sobre uma viagem, passeio ou momento especial que vocês viveram juntos.',
-    photo: '/linha_do_tempo/3.png',
+      'Primeira vez que viajamos junto oficialmente, fomos na praia no final do ano em clima Natalino',
+    photo: '/linha_do_tempo/3.jpeg',
   },
   {
     id: 4,
     date: 'capítulo quatro',
     title: 'Os pequenos momentos',
     description:
-      'As coisas simples do dia a dia que fazem tudo valer a pena — o café da manhã, as risadas bobas.',
-    photo: '/linha_do_tempo/4.png',
+      'O dia que nossa aliança finalmente chegou, e desde então meu amor so aumentou',
+    photo: '/linha_do_tempo/4.jpeg',
   },
   {
     id: 5,
     date: 'capítulo cinco',
-    title: 'Hoje',
+    title: 'Os dias de hoje',
     description:
-      'Onde vocês estão agora, e por que esse capítulo é o seu favorito até aqui.',
-    photo: '/linha_do_tempo/5.png',
+      'Nosso momento atual. É incrível olhar para trás e perceber tudo o que já vivemos e construímos juntos. ❤️',
+    photo: '/linha_do_tempo/5.jpeg',
   },
 ]
