@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { storySlides } from '../data/story'
 import '../styles/Story.css'
 
-
 interface StoryProps {
   open: boolean
   onClose: () => void
@@ -26,8 +25,7 @@ export default function Story({ open, onClose }: StoryProps) {
     }
   }, [open])
 
-  // trava a rolagem da página de trás enquanto o story está aberto,
-  // pra parecer uma tela totalmente separada
+  // trava a rolagem da página de trás enquanto o story está aberto
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -46,9 +44,8 @@ export default function Story({ open, onClose }: StoryProps) {
     const audio = audioRef.current
     if (audio) {
       audio.currentTime = 0
-      audio.play().catch(() => {
-        // autoplay pode ser bloqueado antes da 1ª interação — o clique
-        // que abre o story já conta como interação, então normalmente toca
+      audio.play().catch((err) => {
+        console.error('[story] autoplay bloqueado, use o botão de play:', err)
       })
     }
   }, [index, open])
@@ -92,6 +89,24 @@ export default function Story({ open, onClose }: StoryProps) {
     setIndex((i) => Math.max(0, i - 1))
   }
 
+  // controla o áudio de verdade, e loga qualquer erro real no console
+  function togglePaused() {
+    setPaused((p) => {
+      const next = !p
+      const audio = audioRef.current
+      if (audio) {
+        if (next) {
+          audio.pause()
+        } else {
+          audio.play().catch((err) => {
+            console.error('[story] erro ao tentar tocar o áudio:', err)
+          })
+        }
+      }
+      return next
+    })
+  }
+
   return (
     <div className="story-overlay" role="dialog" aria-modal="true">
       <div className="story-overlay__bars">
@@ -114,7 +129,7 @@ export default function Story({ open, onClose }: StoryProps) {
         <div className="story-overlay__actions">
           <button
             className="story-overlay__icon-btn"
-            onClick={() => setPaused((p) => !p)}
+            onClick={togglePaused}
             aria-label={paused ? 'Continuar' : 'Pausar'}
           >
             {paused ? '▶' : '❚❚'}
