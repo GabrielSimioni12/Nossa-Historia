@@ -10,7 +10,7 @@ export const siteConfig = {
 
   // Data em que vocês começaram a namorar (usada no contador ao vivo)
   // formato: 'AAAA-MM-DDTHH:MM:SS'
-  relationshipStart: '2023-01-01T00:00:00',
+relationshipStart: '2023-03-31T00:00:00',
 
   // Mensagem final, antes do fechamento com confete
   finalMessage:

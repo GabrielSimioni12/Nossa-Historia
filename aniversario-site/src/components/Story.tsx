@@ -11,7 +11,13 @@ function isVideo(path: string) {
   return path.toLowerCase().endsWith('.mp4')
 }
 
+// ─────────────────────────────────────────────────────────
+// EDITE AQUI: a mensagem da tela de introdução, antes do story começar
+// ─────────────────────────────────────────────────────────
+const INTRO_MESSAGE = `Você, apesar de ser uma menina bem reservada, sempre adorou postar foto com seu namorado. Por outro lado, eu nunca gostei muito. No entanto, eu fiz algo para mostrar o quanto eu te amo: agora você tem um lugar especial para sempre revisar os nossos stories exclusivos. Escolhi algumas das nossas melhores fotos, com músicas que marcaram o nosso relacionamento de alguma forma.`
+
 export default function Story({ open, onClose }: StoryProps) {
+  const [phase, setPhase] = useState<'intro' | 'playing'>('intro')
   const [index, setIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -20,9 +26,10 @@ export default function Story({ open, onClose }: StoryProps) {
   const slide = storySlides[index]
   const isLast = index === storySlides.length - 1
 
-  // reabre sempre do primeiro slide
+  // sempre que o story abre, começa pela introdução
   useEffect(() => {
     if (open) {
+      setPhase('intro')
       setIndex(0)
       setProgress(0)
       setPaused(false)
@@ -41,9 +48,9 @@ export default function Story({ open, onClose }: StoryProps) {
     }
   }, [open])
 
-  // troca a música e reinicia o progresso a cada slide novo
+  // troca a música e reinicia o progresso a cada slide novo (só depois da intro)
   useEffect(() => {
-    if (!open) return
+    if (!open || phase !== 'playing') return
     setProgress(0)
     const audio = audioRef.current
     if (audio) {
@@ -52,11 +59,11 @@ export default function Story({ open, onClose }: StoryProps) {
         console.error('[story] autoplay bloqueado, use o botão de play:', err)
       })
     }
-  }, [index, open])
+  }, [index, open, phase])
 
-  // avanço automático
+  // avanço automático (só depois da intro)
   useEffect(() => {
-    if (!open || paused) return
+    if (!open || phase !== 'playing' || paused) return
     const stepMs = 50
     const id = setInterval(() => {
       setProgress((p) => {
@@ -70,7 +77,7 @@ export default function Story({ open, onClose }: StoryProps) {
     }, stepMs)
     return () => clearInterval(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, paused, index, slide.duration])
+  }, [open, phase, paused, index, slide.duration])
 
   // pausa o áudio quando o story fecha
   useEffect(() => {
@@ -108,6 +115,22 @@ export default function Story({ open, onClose }: StoryProps) {
       }
       return next
     })
+  }
+
+  if (phase === 'intro') {
+    return (
+      <div className="story-overlay story-overlay--intro" role="dialog" aria-modal="true">
+        <div className="story-intro">
+          <p className="story-intro__text">{INTRO_MESSAGE}</p>
+          <button className="story-intro__button" onClick={() => setPhase('playing')}>
+            continuar
+          </button>
+          <button className="story-intro__skip" onClick={onClose}>
+            voltar
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

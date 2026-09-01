@@ -6,7 +6,6 @@ import Story from './components/Story'
 import Timeline from './components/Timeline'
 import Gallery from './components/Gallery'
 import Message from './components/Message'
-import MusicPlayer from './components/MusicPlayer'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -26,7 +25,6 @@ export default function App() {
           <Gallery />
           <Message />
           <Footer />
-          <MusicPlayer autoStart />
         </>
       )}
 
