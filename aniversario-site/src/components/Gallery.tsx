@@ -1,28 +1,39 @@
-import { timeline } from '../data/timeline'
-import { useScrollReveal } from '../hooks/useScrollReveal'
+import { galleryItems } from '../data/gallery'
+import '../styles/Gallery.css'
 
-// ─────────────────────────────────────────────────────────
-// EDITE AQUI: pode trocar por uma lista própria de fotos
-// (não precisa ser a mesma da linha do tempo).
-// ─────────────────────────────────────────────────────────
-const galleryPhotos = timeline.map((e) => ({ src: e.photo, alt: e.title }))
+function isVideo(path: string) {
+  return path.toLowerCase().endsWith('.mp4')
+}
 
 export default function Gallery() {
-  const ref = useScrollReveal<HTMLDivElement>(0.1)
+  // duplica a lista pra o loop ficar contínuo, sem "salto" no final
+  const loopItems = [...galleryItems, ...galleryItems]
 
   return (
     <section className="gallery" id="galeria">
       <header className="gallery__header">
         <span className="section-eyebrow">o álbum</span>
-        <h2 className="section-title">Alguns momentos nossos</h2>
+        <h2 className="section-title">Sessão Fotinhas Zuadas</h2>
       </header>
 
-      <div ref={ref} className="gallery__grid">
-        {galleryPhotos.map((photo, i) => (
-          <figure className="gallery__item" key={i} style={{ ['--i' as string]: i }}>
-            <img src={photo.src} alt={photo.alt} loading="lazy" />
-          </figure>
-        ))}
+      <div className="gallery__track-wrapper">
+        <div className="gallery__track">
+          {loopItems.map((item, i) => (
+            <div className="gallery__card" key={`${item.id}-${i}`}>
+              {isVideo(item.src) ? (
+                <>
+                  <video className="gallery__bg" src={item.src} autoPlay loop muted playsInline aria-hidden="true" />
+                  <video className="gallery__photo" src={item.src} autoPlay loop muted playsInline />
+                </>
+              ) : (
+                <>
+                  <img className="gallery__bg" src={item.src} alt="" aria-hidden="true" />
+                  <img className="gallery__photo" src={item.src} alt="" loading="lazy" />
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

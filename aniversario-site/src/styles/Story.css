@@ -6,21 +6,39 @@
   overflow: hidden;
 }
 
-.story-overlay__photo {
+/* moldura desfocada: o fundo mostra a mesma foto borrada e ampliada,
+   preenchendo os cantos; a foto de cima aparece inteira, sem cortar nada */
+.story-overlay__media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.story-overlay__bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  z-index: 1;
+  filter: blur(50px) brightness(0.5) saturate(1.2);
+  transform: scale(1.2);
+}
+
+.story-overlay__photo {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   animation: storyFadeIn 0.35s ease;
 }
 
 @keyframes storyFadeIn {
   from {
     opacity: 0;
-    transform: scale(1.03);
+    transform: scale(1.02);
   }
   to {
     opacity: 1;
@@ -68,7 +86,7 @@
 .story-overlay__back {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   background: rgba(0, 0, 0, 0.45);
   border: none;
   border-radius: 999px;
@@ -91,7 +109,6 @@
   border: none;
   background: rgba(0, 0, 0, 0.4);
   color: #f5efe6;
-  font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,7 +126,10 @@
 }
 
 .story-overlay__music {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   color: var(--gold, #e8c468);
   font-family: 'Jost', sans-serif;
   font-size: 0.75rem;

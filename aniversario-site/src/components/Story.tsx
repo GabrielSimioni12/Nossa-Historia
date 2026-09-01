@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { storySlides } from '../data/story'
+import { IconBack, IconPlay, IconPause, IconMusic } from './icons'
 import '../styles/Story.css'
 
 interface StoryProps {
@@ -11,9 +12,6 @@ function isVideo(path: string) {
   return path.toLowerCase().endsWith('.mp4')
 }
 
-// ─────────────────────────────────────────────────────────
-// EDITE AQUI: a mensagem da tela de introdução, antes do story começar
-// ─────────────────────────────────────────────────────────
 const INTRO_MESSAGE = `Você, apesar de ser uma menina bem reservada, sempre adorou postar foto com seu namorado. Por outro lado, eu nunca gostei muito. No entanto, eu fiz algo para mostrar o quanto eu te amo: agora você tem um lugar especial para sempre revisar os nossos stories exclusivos. Escolhi algumas das nossas melhores fotos, com músicas que marcaram o nosso relacionamento de alguma forma.`
 
 export default function Story({ open, onClose }: StoryProps) {
@@ -25,8 +23,8 @@ export default function Story({ open, onClose }: StoryProps) {
 
   const slide = storySlides[index]
   const isLast = index === storySlides.length - 1
+  const video = isVideo(slide.photo)
 
-  // sempre que o story abre, começa pela introdução
   useEffect(() => {
     if (open) {
       setPhase('intro')
@@ -36,7 +34,6 @@ export default function Story({ open, onClose }: StoryProps) {
     }
   }, [open])
 
-  // trava a rolagem da página de trás enquanto o story está aberto
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -48,7 +45,6 @@ export default function Story({ open, onClose }: StoryProps) {
     }
   }, [open])
 
-  // troca a música e reinicia o progresso a cada slide novo (só depois da intro)
   useEffect(() => {
     if (!open || phase !== 'playing') return
     setProgress(0)
@@ -61,7 +57,6 @@ export default function Story({ open, onClose }: StoryProps) {
     }
   }, [index, open, phase])
 
-  // avanço automático (só depois da intro)
   useEffect(() => {
     if (!open || phase !== 'playing' || paused) return
     const stepMs = 50
@@ -79,7 +74,6 @@ export default function Story({ open, onClose }: StoryProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, phase, paused, index, slide.duration])
 
-  // pausa o áudio quando o story fecha
   useEffect(() => {
     if (!open && audioRef.current) {
       audioRef.current.pause()
@@ -150,7 +144,7 @@ export default function Story({ open, onClose }: StoryProps) {
 
       <div className="story-overlay__header">
         <button className="story-overlay__back" onClick={onClose}>
-          <span aria-hidden="true">←</span> Voltar ao início
+          <IconBack /> Voltar ao início
         </button>
         <div className="story-overlay__actions">
           <button
@@ -158,35 +152,29 @@ export default function Story({ open, onClose }: StoryProps) {
             onClick={togglePaused}
             aria-label={paused ? 'Continuar' : 'Pausar'}
           >
-            {paused ? '▶' : '❚❚'}
+            {paused ? <IconPlay /> : <IconPause />}
           </button>
         </div>
       </div>
 
-      {isVideo(slide.photo) ? (
-        <video
-          key={slide.photo}
-          className="story-overlay__photo"
-          src={slide.photo}
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
-      ) : (
-        <img
-          key={slide.photo}
-          className="story-overlay__photo"
-          src={slide.photo}
-          alt={slide.caption}
-        />
-      )}
+      <div className="story-overlay__media">
+        {video ? (
+          <>
+            <video className="story-overlay__bg" src={slide.photo} autoPlay loop muted playsInline aria-hidden="true" />
+            <video key={slide.photo} className="story-overlay__photo" src={slide.photo} autoPlay loop muted playsInline />
+          </>
+        ) : (
+          <>
+            <img className="story-overlay__bg" src={slide.photo} alt="" aria-hidden="true" />
+            <img key={slide.photo} className="story-overlay__photo" src={slide.photo} alt={slide.caption} />
+          </>
+        )}
+      </div>
 
       <div className="story-overlay__bottom">
         <span className="story-overlay__music">
-          ♪ {slide.music.title} · {slide.music.artist}
+          <IconMusic /> {slide.music.title} · {slide.music.artist}
         </span>
-        <p className="story-overlay__caption">{slide.caption}</p>
       </div>
 
       <button className="story-overlay__zone story-overlay__zone--prev" onClick={goPrev} aria-label="Momento anterior" />
